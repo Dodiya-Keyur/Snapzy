@@ -1,28 +1,15 @@
 # Content Hub
 
-```{=html}
-<p align="center">
-```
-`<img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />`{=html}
-`<img src="https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white" alt="Vite 7" />`{=html}
-`<img src="https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript ES6" />`{=html}
-`<img src="https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white" alt="HTML5" />`{=html}
-`<img src="https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white" alt="CSS3" />`{=html}
-`<img src="https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white" alt="Bootstrap 5" />`{=html}
-```{=html}
-</p>
-```
-```{=html}
-<p align="center">
-```
-`<img src="https://img.shields.io/badge/Node.js-Backend-339933?logo=node.js&logoColor=white" alt="Node.js" />`{=html}
-`<img src="https://img.shields.io/badge/Express.js-API-000000?logo=express&logoColor=white" alt="Express.js" />`{=html}
-`<img src="https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb&logoColor=white" alt="MongoDB" />`{=html}
-`<img src="https://img.shields.io/badge/Git-Version%20Control-F05032?logo=git&logoColor=white" alt="Git" />`{=html}
-`<img src="https://img.shields.io/badge/GitHub-Code%20Hosting-181717?logo=github&logoColor=white" alt="GitHub" />`{=html}
-```{=html}
-</p>
-```
+![Node.js](https://img.shields.io/badge/Node.js-20+-green?style=for-the-badge&logo=node.js)
+![Express.js](https://img.shields.io/badge/Express.js-REST_API-black?style=for-the-badge&logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb)
+![Mongoose](https://img.shields.io/badge/Mongoose-ODM-red?style=for-the-badge&logo=mongoose)
+![JWT](https://img.shields.io/badge/JWT-Authentication-black?style=for-the-badge&logo=jsonwebtokens)
+![Bcrypt](https://img.shields.io/badge/Bcrypt-Password_Hashing-orange?style=for-the-badge)
+![REST API](https://img.shields.io/badge/REST-API-blue?style=for-the-badge)
+![Git](https://img.shields.io/badge/Git-Version_Control-orange?style=for-the-badge&logo=git)
+![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)
+
 > A modern social media web application built with React and Node.js
 > that allows users to create, explore, and interact with posts through
 > a clean and responsive interface.
