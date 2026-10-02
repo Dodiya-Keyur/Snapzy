@@ -1,4 +1,4 @@
-# Content Hub
+# SnapZy
 
 ![Node.js](https://img.shields.io/badge/Node.js-20+-green?style=for-the-badge&logo=node.js)
 ![Express.js](https://img.shields.io/badge/Express.js-REST_API-black?style=for-the-badge&logo=express)
@@ -14,52 +14,52 @@
 > that allows users to create, explore, and interact with posts through
 > a clean and responsive interface.
 
+
 ## Features
 
--   User registration and login
--   Secure authentication and logout
--   Change password functionality
--   User profile management
--   Update profile information
--   Update and delete profile pictures
--   Create, view, update, and delete posts
--   View all users' posts
--   View posts created by a specific user
--   View a single post by ID
--   Responsive and user-friendly interface
--   RESTful backend APIs
--   MongoDB-based data persistence
+- User registration and login
+- Secure authentication
+- Logout functionality
+- Change password
+- User profile management
+- Update profile information
+- Update profile picture
+- Delete profile picture
+- Delete user account
+- Create posts
+- Get all posts
+- Get posts created by a specific user
+- Get a post by ID
+- Update posts
+- Delete posts
+- Protected routes
+- MongoDB database integration
+- RESTful API architecture
 
 ## Technologies Used
 
-### Frontend
+### Backend Technologies
 
-  Technology        Purpose
-  ----------------- ----------------------------------------
-  React 19          Building the user interface
-  Vite 7            Frontend development and build tooling
-  JavaScript ES6+   Application logic
-  HTML5             Page structure
-  CSS3              Styling and responsive layouts
-  Bootstrap 5       UI components and responsive design
-
-### Backend
-
-  Technology   Purpose
-  ------------ ------------------------------------------
-  Node.js      JavaScript runtime
-  Express.js   REST API and server framework
-  MongoDB      NoSQL database
-  Mongoose     MongoDB object modeling
-  JWT          Authentication/token-based authorization
+| Technology | Purpose |
+|---|---|
+| **Node.js** | JavaScript runtime for the backend |
+| **Express.js** | Web framework for building REST APIs |
+| **MongoDB** | Database for users and posts |
+| **Mongoose** | ODM for MongoDB |
+| **JWT** | Authentication and authorization |
+| **Bcrypt / BcryptJS** | Secure password hashing |
+| **REST API** | Communication between client and server |
 
 ### Development Tools
 
-  Tool      Purpose
-  --------- ---------------------------------------
-  Git       Version control
-  GitHub    Source-code hosting and collaboration
-  VS Code   Development environment
+| Tool | Purpose |
+|---|---|
+| **Git** | Version control |
+| **GitHub** | Repository and source-code hosting |
+| **Postman** | API testing |
+| **VS Code** | Development environment |
+
+---
 
 ## Functionalities
 
@@ -88,6 +88,8 @@
 -   Get a post by ID
 -   Update an existing post
 -   Delete a post
+
+---
 
 ### Application Flow
 
@@ -129,73 +131,6 @@ Content-Hub/
 ├── README.md
 └── .gitignore
 ```
-
-## Getting Started
-
-### 1. Clone the repository
-
-``` bash
-git clone <your-repository-url>
-cd Content-Hub
-```
-
-### 2. Install frontend dependencies
-
-``` bash
-cd frontend
-npm install
-npm run dev
-```
-
-### 3. Install backend dependencies
-
-Open another terminal:
-
-``` bash
-cd backend
-npm install
-npm run dev
-```
-
-### 4. Configure environment variables
-
-Create a `.env` file in the backend directory and add the required
-configuration, for example:
-
-``` env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-```
-
-> Keep your `.env` file private and never commit secrets to GitHub.
-
-## API Modules
-
-The backend is organized into separate API modules:
-
--   **Authentication APIs** --- register, login, logout, and change
-    password
--   **User APIs** --- profile, user lookup, profile updates, profile
-    picture management, and account deletion
--   **Post APIs** --- create, read, update, and delete posts
-
-This separation keeps the backend modular and makes the project easier
-to maintain and extend.
-
-## Future Improvements
-
--   Like and unlike posts
--   Comments and replies
--   Follow and unfollow users
--   User search
--   Post search
--   Image upload with cloud storage
--   Notifications
--   Direct messaging
--   Pagination and infinite scrolling
--   Post sharing/bookmarking
--   Admin dashboard
 
 ## Author
 
