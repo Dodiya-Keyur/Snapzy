@@ -1,0 +1,86 @@
+const validateRegister = (req, res, next) => {
+
+    const { username, email, password, confirmpassword, role } = req.body;
+
+    // Required fields
+    if (!username || !email || !password || !confirmpassword) {
+        return res.status(400).json({
+            message: "All fields are required"
+        });
+    }
+    
+    // Username validation
+    if (username.length < 3) {
+        return res.status(400).json({
+            message: "Username must be at least 3 characters"
+        });
+    }
+
+    if (username !== username.toLowerCase()) {
+        return res.status(400).json({
+            message: "Username must be in lowercase"
+        });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({
+            message: "Please enter a valid email"
+        });
+    }
+
+    // Password validation
+    if (password.length < 8) {
+        return res.status(400).json({
+            message: "Password must be at least 8 characters"
+        });
+    }
+
+    // Confirm password
+    if (password !== confirmpassword) {
+        return res.status(400).json({
+            message: "Passwords do not match"
+        });
+    }
+    next();
+};
+
+const validateChangePassword = (req, res, next) => {
+    
+    const { oldpassword , newpassword, newconfirmpassword } = req.body;
+
+    // Required fields
+    if (!oldpassword || !newpassword || !newconfirmpassword) {
+        return res.status(400).json({
+            message: "All fields are required"
+        });
+    }
+
+    // Old Password validation
+    if (oldpassword.length < 8) {
+        return res.status(400).json({
+            message: "Password must be at least 8 characters"
+        });
+    }
+
+    // New Password validation
+    if (newpassword.length < 8) {
+        return res.status(400).json({
+            message: "Password must be at least 8 characters"
+        });
+    }
+
+    // Confirm password
+    if (newpassword !== newconfirmpassword) {
+        return res.status(400).json({
+            message: "Passwords & Confirm password do not match"
+        });
+    }
+    next();
+
+
+}
+
+module.exports = { validateRegister, validateChangePassword };
