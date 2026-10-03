@@ -1,6 +1,6 @@
 const validateRegister = (req, res, next) => {
 
-    const { username, email, password, confirmpassword, role } = req.body;
+    const { username, email, password, confirmpassword } = req.body;
 
     // Required fields
     if (!username || !email || !password || !confirmpassword) {
@@ -8,7 +8,7 @@ const validateRegister = (req, res, next) => {
             message: "All fields are required"
         });
     }
-    
+
     // Username validation
     if (username.length < 3) {
         return res.status(400).json({
@@ -48,8 +48,8 @@ const validateRegister = (req, res, next) => {
 };
 
 const validateChangePassword = (req, res, next) => {
-    
-    const { oldpassword , newpassword, newconfirmpassword } = req.body;
+
+    const { oldpassword, newpassword, newconfirmpassword } = req.body;
 
     // Required fields
     if (!oldpassword || !newpassword || !newconfirmpassword) {

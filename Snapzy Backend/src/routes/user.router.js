@@ -12,21 +12,46 @@ const userrouter = express.Router();
 
 
 // Find User and User Post
-userrouter.get("/get-user", userAuth, userControllers.getUser);
-userrouter.get("/get-user/:userid", userAuth, userControllers.getUserById);
+userrouter.get("/me", userAuth, userControllers.getUser);
+userrouter.get("/:userid", userAuth, userControllers.getUserById);
 
 // Find User Post
-userrouter.get("/get-userposts", userAuth, userControllers.getUserPost);
-userrouter.get("/get-user/:userid/posts", userAuth, userControllers.getUserPostsById);
+userrouter.get("/me/posts", userAuth, userControllers.getUserPost);
+userrouter.get("/:userid/posts", userAuth, userControllers.getUserPostsById);
 
 // Profile 
-userrouter.patch("/update-profile", userAuth, userControllers.updateProfile);
+userrouter.patch("/me/update-profile", userAuth, userControllers.updateProfile);
 
 // Profile Picture
-userrouter.patch("/update-profile-picture", userAuth, upload.single("image"), userControllers.updateProfilePicture);
-userrouter.patch("/delete-profile-picture", userAuth, userControllers.deleteProfilePicture);
+userrouter.patch("/me/update-profile-picture", userAuth, upload.single("image"), userControllers.updateProfilePicture);
+userrouter.delete("/me/delete-profile-picture", userAuth, userControllers.deleteProfilePicture);
 
 // Delete User 
-userrouter.delete("/delete-user", userAuth, userControllers.deleteUser)
+userrouter.delete("/me/delete-user", userAuth, userControllers.deleteUser)
+
+
+
+// USER APIs
+// │
+// ├── Profile
+// │   ├── GET    /api/user/me          => Complet
+// │   ├── GET    /api/user/:userid          => Complet
+// │   ├── PATCH  /api/user/update-profile          => Complet
+// │   ├── PATCH  /api/user/profile-picture          => Complet
+// │   └── DELETE /api/user/profile-picture          => Complet
+// │
+// ├── Search
+// │   └── GET    /api/user/search
+// │
+// ├── Follow
+// │   ├── POST   /api/user/:userid/follow 
+// │   └── DELETE /api/user/:userid/follow
+// │
+// ├── Followers
+// │   ├── GET    /api/user/:userid/followers
+// │   └── GET    /api/user/:userid/following
+// │
+// └── Posts
+//     └── GET    /api/user/:userid/posts           => Complet
 
 module.exports = userrouter;

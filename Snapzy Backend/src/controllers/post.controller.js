@@ -1,10 +1,9 @@
-
-
+const mongoose = require("mongoose");
 
 const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
 
-const { uplodeFile, imagekit } = require('../services/storage.services')
+const { uploadFile, imagekit } = require('../services/storage.services')
 
 async function createPost(req, res) {
 
@@ -17,13 +16,22 @@ async function createPost(req, res) {
         }
 
         // Upload image
-        const result = await uplodeFile(req.file.buffer);
+        const result = await uploadFile(
+            file.buffer,
+            file.mimetype
+        );
 
         // Get caption
         const { caption } = req.body;
 
         //Get User 
         const userId = req.user._id;
+
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
 
         // Create a post
         const post = await postModel.create({
@@ -32,17 +40,6 @@ async function createPost(req, res) {
             caption: caption,
             user: userId,
         });
-
-        // Add post ID to user's post array
-        await userModel.findByIdAndUpdate(
-            userId,
-            {
-                $push: {
-                    post: post._id,
-                },
-            },
-            { new: true }
-        );
 
         res.status(201).json({
             message: "Post created successfully",
@@ -66,6 +63,7 @@ async function getAllPost(req, res) {
     try {
         const posts = await postModel
             .find()
+            .sort({ createdAt: -1 })
             .populate("user", "username profilePicture");
 
         res.status(200).json({
@@ -88,6 +86,12 @@ async function getPost(req, res) {
 
         //Get Post Id
         const postId = req.params.postid;
+
+        if (!mongoose.isValidObjectId(postId)) {
+            return res.status(400).json({
+                message: "Invalid post ID"
+            });
+        }
 
         // Find Post
         const post = await postModel
@@ -122,13 +126,22 @@ async function updatePost(req, res) {
         //Get Post Id
         const postId = req.params.postid;
 
+        if (!mongoose.isValidObjectId(postId)) {
+            return res.status(400).json({
+                message: "Invalid post ID"
+            });
+        }
+
         // Get caption
         const { caption } = req.body;
 
-        const post = await postModel.findOneAndUpdate(
-            { _id: postId },
+        const UpdatedPost = await postModel.findOneAndUpdate(
             {
-                caption: caption
+                _id: postId,
+                user: req.user._id
+            },
+            {
+                caption
             },
             {
                 returnDocument: "after",
@@ -136,9 +149,15 @@ async function updatePost(req, res) {
             }
         );
 
+        if (!UpdatedPost) {
+            return res.status(404).json({
+                message: "Post not found or you are not allowed to update it"
+            });
+        }
+
         res.status(200).json({
             message: "Post updated successfully",
-            post
+            UpdatedPost
         });
 
 
@@ -158,9 +177,16 @@ async function deletePost(req, res) {
         //Get Post Id
         const postId = req.params.postid;
 
+        if (!mongoose.isValidObjectId(postId)) {
+            return res.status(400).json({
+                message: "Invalid post ID"
+            });
+        }
+
         //Get Post By Id
         const post = await postModel
             .findOne({ _id: postId })
+            .select("+imageFileId")
             .populate("user", "_id");
 
         // Check post exists
@@ -175,6 +201,12 @@ async function deletePost(req, res) {
 
         // Check whether logged-in user created this post
         const userId = req.user._id
+
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
 
         if (userId.toString() !== postUserId.toString()) {
             return res.status(403).json({

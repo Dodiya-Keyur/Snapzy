@@ -1,8 +1,9 @@
+const mongoose = require("mongoose");
 
 const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
 
-const { uplodeFile, imagekit } = require('../services/storage.services')
+const { uploadFile, imagekit } = require('../services/storage.services')
 
 const DEFAULT_PROFILE_PICTURE =
     "https://i.pinimg.com/474x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg";
@@ -14,10 +15,16 @@ async function getUser(req, res) {
 
         const userId = req.user._id;
 
-        const User = await userModel.findById(userId)
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
+        const User = await userModel.findById(userId).select("_id username email profilePicture bio createdAt");
 
         if (!User) {
-            return res.status(401).json({ message: "User Invalid" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         res.status(200).json({
@@ -38,8 +45,17 @@ async function getUserPost(req, res) {
 
     try {
 
+        const userId = req.user._id
+
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
         const posts = await postModel
-            .find({ user: req.user._id })
+            .find({ user: userId })
+            .sort({ createdAt: -1 })
             .populate("user", "username profilePicture");
 
         res.status(200).json({
@@ -62,11 +78,18 @@ async function getUserById(req, res) {
 
         const userId = req.params.userid;
 
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid user ID"
+            });
+        }
+
         const User = await userModel
             .findById(userId)
+            .select("_id username profilePicture bio createdAt")
 
         if (!User) {
-            return res.status(401).json({ message: "User Invalid" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         res.status(200).json({
@@ -91,10 +114,16 @@ async function getUserPostsById(req, res) {
 
         const userId = req.params.userid;
 
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid user ID"
+            });
+        }
+
         const User = await userModel.findById(userId);
 
         if (!User) {
-            return res.status(401).json({ message: "User Invalid" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         const posts = await postModel
@@ -123,28 +152,27 @@ async function updateProfile(req, res) {
 
         const userId = req.user._id;
 
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
         const User = await userModel.findById(userId);
 
         if (!User) {
-            return res.status(401).json({ message: "User Invalid" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         const { bio, username } = req.body;
 
-        if (!username) {
-            return res.status(400).json({
-                message: "Username is required"
-            });
-        }
+        const normalizedUsername = username.trim().toLowerCase();
 
         // Check if username is already used by another user
-        const usernameExists = await userModel.findOne({ username: username });
+        const usernameExists = await userModel.findOne({ username: normalizedUsername, _id: userId });
 
-        if (
-            usernameExists &&
-            usernameExists._id.toString() !== userId.toString()
-        ) {
-            return res.status(400).json({
+        if (usernameExists) {
+            return res.status(409).json({
                 message: "Username already exists"
             });
         }
@@ -153,7 +181,7 @@ async function updateProfile(req, res) {
             { _id: userId },
             {
                 bio,
-                username
+                username: normalizedUsername
             },
             {
                 returnDocument: "after",
@@ -182,12 +210,21 @@ async function updateProfilePicture(req, res) {
 
         const userId = req.user._id;
 
-        const User = await userModel.findById(userId);
-
-        if (!User) {
-            return res.status(401).json({ message: "User Invalid" });
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
         }
 
+        const User = await userModel
+            .findById(userId)
+            .select("+profilePictureFileId");;
+
+        if (!User) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const oldFile = User.profilePicture;
+        const oldFileId = User.profilePictureFileId;
 
         if (!req.file) {
             return res.status(400).json({
@@ -196,21 +233,30 @@ async function updateProfilePicture(req, res) {
         }
 
         // Upload image
-        const result = await uplodeFile(req.file.buffer);
-
-        console.log(result)
+        const result = await uploadFile(
+            file.buffer,
+            file.mimetype
+        );
 
         const user = await userModel.findOneAndUpdate(
             { _id: userId },
             {
-                profilePicture: result.url,
-                profilePictureFileId: result.fileId,
+                profilePicture: result.url || oldFile,
+                profilePictureFileId: result.fileId || oldFileId,
             },
             {
                 returnDocument: "after",
                 runValidators: true
             }
         );
+
+        if (oldFileId) {
+            try {
+                await imagekit.files.delete(oldFileId);
+            } catch (error) {
+                console.error(error);
+            }
+        }
 
         res.status(200).json({
             message: "User Profile Picture Update successfully",
@@ -233,10 +279,18 @@ async function deleteProfilePicture(req, res) {
 
         const userId = req.user._id;
 
-        const User = await userModel.findById(userId);
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
+        const User = await userModel
+            .findById(userId)
+            .select("+profilePictureFileId");;
 
         if (!User) {
-            return res.status(401).json({ message: "User Invalid" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         if (User.profilePictureFileId) {
@@ -276,19 +330,53 @@ async function deleteUser(req, res) {
         // Find logged-in user
         const userId = req.user._id
 
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
+        // Find user
+        const User = await userModel
+            .findById(userId)
+            .select("+profilePictureFileId");
+
+        if (!User) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Find all posts created by this user
+        const posts = await postModel.
+            find({ user: userId, })
+            .select("+imageFileId");
+
+        // Delete all post images from ImageKit
+        for (const post of posts) {
+
+            if (post.imageFileId) {
+                try {
+                    await imagekit.files.delete(post.imageFileId);
+                } catch (error) {
+                    console.log(
+                        `Failed to delete ImageKit file ${post.imageFileId}:`,
+                        error.message
+                    );
+                }
+            }
+        }
+
         // Delete all posts created by this user
         await postModel.deleteMany({
             user: userId,
         });
 
-        const User = userModel.findById(userId)
-
-        if (!User) {
-            return res.status(401).json({ message: "User Invalid" });
-        }
-
+        // Delete profile picture from ImageKit
         if (User.profilePictureFileId) {
-            await imagekit.files.delete(user.profilePictureFileId);
+            try {
+                await imagekit.files.delete(User.profilePictureFileId);
+            } catch (error) {
+                console.log("Failed to delete profile picture:", error.message);
+            }
         }
 
         // Delet User
@@ -296,9 +384,14 @@ async function deleteUser(req, res) {
             { _id: userId }
         );
 
-        res.status(200).json({
-            message: "User Deleted successfully",
-            deletedUser
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
+        });
+
+        return res.status(200).json({
+            message: "User deleted successfully"
         });
 
 
@@ -310,7 +403,5 @@ async function deleteUser(req, res) {
     }
 
 }
-
-
 
 module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById }

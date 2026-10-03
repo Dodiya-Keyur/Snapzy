@@ -4,10 +4,14 @@ const imagekit = new ImageKit({
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY
 });
 
-async function uplodeFile(buffer) {
+
+async function uploadFile(buffer, mimetype) {
+
+    const extension = mimetype.split("/")[1];
+
     const result = await imagekit.files.upload({
         file: buffer.toString("base64"),
-        fileName: "image.jpg"
+        fileName: `image-${Date.now()}.${extension}`,
     });
 
     return result;
@@ -15,5 +19,5 @@ async function uplodeFile(buffer) {
 
 module.exports = {
     imagekit,
-    uplodeFile
+    uploadFile
 };

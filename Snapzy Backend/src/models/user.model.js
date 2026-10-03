@@ -34,7 +34,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["user", "admin"],
         default: "user",
-        select: false
     },
 
     profilePicture: {
@@ -54,26 +53,18 @@ const userSchema = new mongoose.Schema({
         default: "",
     },
 
-    post: [
+    likedPosts: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Post",
         },
     ],
-    like: [
+    savedPosts: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Post",
         },
     ],
-    savePst: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Post",
-        },
-    ],
-
-
 
     followers: [
         {

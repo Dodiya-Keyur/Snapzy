@@ -10,6 +10,7 @@ const postControllers = require("../controllers/post.controller")
 
 const postrouter = express.Router();
 
+
 // Create Post
 postrouter.post("/create-post", userAuth, upload.single("image"), postControllers.createPost); 
 
@@ -21,6 +22,6 @@ postrouter.get("/getpost/:postid", userAuth, postControllers.getPost);
 postrouter.patch("/update-post/:postid", userAuth, postControllers.updatePost); 
 
 // Delete Post
-postrouter.delete("/delete-post/:postid", userAuth, postControllers.deletePost);
+postrouter.delete("/delete-post/:postid", userAuth, postControllers.deletePost); 
 
 module.exports = postrouter;

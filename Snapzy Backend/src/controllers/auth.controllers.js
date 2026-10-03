@@ -1,6 +1,8 @@
-const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
+
+const userModel = require("../models/user.model");
 
 async function registerUser(req, res) {
 
@@ -34,6 +36,9 @@ async function registerUser(req, res) {
                 id: user._id,
             },
             process.env.JWT_SECRET,
+            {
+                expiresIn: "7d"
+            }
         );
 
         // Store the JWT token in a cookie
@@ -55,8 +60,14 @@ async function registerUser(req, res) {
 
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "Username or email already exists"
+            });
+        } else {
+            console.error(error);
+            res.status(500).json({ message: "Internal server error" });
+        }
     }
 }
 
@@ -67,17 +78,23 @@ async function loginUser(req, res) {
         // Get userName/email and password from request body
         const { identifier, password } = req.body;
 
+        const normalizedIdentifier = identifier.trim().toLowerCase();
+
         // Find user using either username or email
-        const user = await userModel.findOne({
-            $or: [
-                { username: identifier },
-                { email: identifier }
-            ]
-        });
+        const user = await userModel
+            .findOne({
+                $or: [
+                    { username: normalizedIdentifier },
+                    { email: normalizedIdentifier }
+                ]
+            })
+            .select("+password");
 
         // Check if user exists
         if (!user) {
-            return res.status(401).json({ message: "User Invalid credentials" });
+            return res.status(401).json({
+                message: "Invalid credentials"
+            });
         }
 
         // Compare the entered password with the stored hashed password
@@ -94,6 +111,9 @@ async function loginUser(req, res) {
                 id: user._id,
             },
             process.env.JWT_SECRET,
+            {
+                expiresIn: "7d"
+            }
         );
 
         // Store the JWT token in a secure HTTP-only cookie
@@ -158,17 +178,23 @@ async function changePassword(req, res) {
         // Get logged-in user's ID
         const userId = req.user._id;
 
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
         // Get passwords from request body
         const { oldpassword, newpassword } = req.body;
 
         // Find user
-        const user = await userModel.findOne(
-            { _id: userId }
-        )
+        const user = await userModel
+            .findOne({ _id: userId })
+            .select("+password");
 
         if (!user) {
-            return res.status(404).json({
-                message: "User not found"
+            return res.status(401).json({
+                message: "Invalid credentials"
             });
         }
 

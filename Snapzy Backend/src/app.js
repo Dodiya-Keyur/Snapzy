@@ -15,11 +15,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use("/api/auth", authRouter);
-app.use("/api/post", postrouter);
-app.use("/api/user", userrouter);
-
+app.use("/api/posts", postrouter);
+app.use("/api/users", userrouter);
 
 
 module.exports = app;
