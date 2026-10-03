@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: DEFAULT_PROFILE_PICTURE,
     },
-    
+
     profilePictureFileId: {
         type: String,
         default: null,
@@ -52,6 +52,12 @@ const userSchema = new mongoose.Schema({
     },
 
     post: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post",
+        },
+    ],
+    like: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Post",
