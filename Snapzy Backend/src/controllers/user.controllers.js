@@ -14,9 +14,9 @@ async function getUser(req, res) {
 
         const userId = req.user._id;
 
-        const User = await userModel.findById(userId);
+        const User = await userModel.findById(userId)
 
-        if (!user) {
+        if (!User) {
             return res.status(401).json({ message: "User Invalid" });
         }
 
@@ -62,7 +62,8 @@ async function getUserById(req, res) {
 
         const userId = req.params.userid;
 
-        const User = await userModel.findById(userId);
+        const User = await userModel
+            .findById(userId)
 
         if (!User) {
             return res.status(401).json({ message: "User Invalid" });
@@ -71,6 +72,38 @@ async function getUserById(req, res) {
         res.status(200).json({
             message: "User fetched successfully",
             User
+        });
+
+
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+
+}
+
+async function getUserPostsById(req, res) {
+
+    try {
+
+        const userId = req.params.userid;
+
+        const User = await userModel.findById(userId);
+
+        if (!User) {
+            return res.status(401).json({ message: "User Invalid" });
+        }
+
+        const posts = await postModel
+            .find({ user: userId })
+            .populate("user", "username profilePicture");
+
+        res.status(200).json({
+            message: "User Posts fetched successfully",
+            posts
         });
 
 
@@ -96,11 +129,32 @@ async function updateProfile(req, res) {
             return res.status(401).json({ message: "User Invalid" });
         }
 
-        const bio = req.body.bio;
+        const { bio, username } = req.body;
+
+        if (!username) {
+            return res.status(400).json({
+                message: "Username is required"
+            });
+        }
+
+        // Check if username is already used by another user
+        const usernameExists = await userModel.findOne({ username: username });
+
+        if (
+            usernameExists &&
+            usernameExists._id.toString() !== userId.toString()
+        ) {
+            return res.status(400).json({
+                message: "Username already exists"
+            });
+        }
 
         const user = await userModel.findOneAndUpdate(
             { _id: userId },
-            { bio: bio },
+            {
+                bio,
+                username
+            },
             {
                 returnDocument: "after",
                 runValidators: true
@@ -185,8 +239,8 @@ async function deleteProfilePicture(req, res) {
             return res.status(401).json({ message: "User Invalid" });
         }
 
-        if (user.profilePictureFileId) {
-            await imagekit.files.delete(user.profilePictureFileId);
+        if (User.profilePictureFileId) {
+            await imagekit.files.delete(User.profilePictureFileId);
         }
 
         const user = await userModel.findOneAndUpdate(
@@ -259,4 +313,4 @@ async function deleteUser(req, res) {
 
 
 
-module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser }
+module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById }

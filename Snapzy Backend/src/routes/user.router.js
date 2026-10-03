@@ -10,10 +10,14 @@ const userControllers = require("../controllers/user.controllers")
 
 const userrouter = express.Router();
 
+
 // Find User and User Post
 userrouter.get("/get-user", userAuth, userControllers.getUser);
-userrouter.get("/user/:userid", userAuth, userControllers.getUserById);
+userrouter.get("/get-user/:userid", userAuth, userControllers.getUserById);
+
+// Find User Post
 userrouter.get("/get-userposts", userAuth, userControllers.getUserPost);
+userrouter.get("/get-user/:userid/posts", userAuth, userControllers.getUserPostsById);
 
 // Profile 
 userrouter.patch("/update-profile", userAuth, userControllers.updateProfile);

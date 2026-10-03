@@ -17,8 +17,9 @@ const postSchema = new mongoose.Schema(
         imageFileId: {
             type: String,
             default: null,
+            select: false
         },
-        
+
         // Post caption
         caption: {
             type: String,

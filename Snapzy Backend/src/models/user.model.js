@@ -27,12 +27,14 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+        select: false
     },
 
     role: {
         type: String,
         enum: ["user", "admin"],
         default: "user",
+        select: false
     },
 
     profilePicture: {
@@ -43,6 +45,7 @@ const userSchema = new mongoose.Schema({
     profilePictureFileId: {
         type: String,
         default: null,
+        select: false
     },
 
     bio: {
@@ -63,6 +66,14 @@ const userSchema = new mongoose.Schema({
             ref: "Post",
         },
     ],
+    savePst: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post",
+        },
+    ],
+
+
 
     followers: [
         {

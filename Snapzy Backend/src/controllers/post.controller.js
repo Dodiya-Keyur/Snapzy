@@ -66,11 +66,7 @@ async function getAllPost(req, res) {
     try {
         const posts = await postModel
             .find()
-            .populate("user");
-
-        // posts.forEach((post) => {
-        //     console.log(post, post.image, post.caption, post.user._id, post.user.username);
-        // });
+            .populate("user", "username profilePicture");
 
         res.status(200).json({
             message: "All posts fetched successfully",
@@ -94,7 +90,10 @@ async function getPost(req, res) {
         const postId = req.params.postid;
 
         // Find Post
-        const post = await postModel.findById(postId);
+        const post = await postModel
+            .findById(postId)
+            .populate("user", "username profilePicture");
+
 
         if (!post) {
             return res.status(404).json({
