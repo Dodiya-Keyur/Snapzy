@@ -17,8 +17,8 @@ async function createPost(req, res) {
 
         // Upload image
         const result = await uploadFile(
-            file.buffer,
-            file.mimetype
+            req.file.buffer,
+            req.file.mimetype
         );
 
         // Get caption

@@ -226,6 +226,7 @@ async function updateProfilePicture(req, res) {
         const oldFile = User.profilePicture;
         const oldFileId = User.profilePictureFileId;
 
+        
         if (!req.file) {
             return res.status(400).json({
                 message: "Image is required"
@@ -234,8 +235,8 @@ async function updateProfilePicture(req, res) {
 
         // Upload image
         const result = await uploadFile(
-            file.buffer,
-            file.mimetype
+            req.file.buffer,
+            req.file.mimetype
         );
 
         const user = await userModel.findOneAndUpdate(
