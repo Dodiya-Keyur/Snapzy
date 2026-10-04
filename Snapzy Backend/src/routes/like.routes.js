@@ -10,11 +10,11 @@ const likeControllers = require("../controllers/like.controllers")
 const likerouter = express.Router();
 
 
-likerouter.post("/post/:postid/like", userAuth, likeControllers.likePost);
-likerouter.delete("/post/:postid/dislike", userAuth, likeControllers.disLikePost);
+likerouter.post("/:postid/like", userAuth, likeControllers.likePost);
+likerouter.delete("/:postid/unlike", userAuth, likeControllers.unlikePost);
 
-likerouter.get("/post/:postid/likes", userAuth, likeControllers.getPostLikes);
+likerouter.get("/:postid/likes", userAuth, likeControllers.getPostLikes);
 
-likerouter.get("/post/:postid/isliked", userAuth, likeControllers.userIsLiked);
+likerouter.get("/:postid/isliked", userAuth, likeControllers.userIsLiked);
 
 module.exports = likerouter;

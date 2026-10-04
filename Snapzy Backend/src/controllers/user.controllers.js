@@ -35,7 +35,7 @@ async function getUser(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -66,7 +66,7 @@ async function getUserPost(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -87,7 +87,7 @@ async function getUserById(req, res) {
 
         const User = await userModel
             .findById(userId)
-            .select("_id username profilePicture bio createdAt")
+            .select("_id username profilePicture bio")
 
         if (!User) {
             return res.status(404).json({ message: "User not found" });
@@ -102,7 +102,7 @@ async function getUserById(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -140,7 +140,7 @@ async function getUserPostsById(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -183,7 +183,7 @@ async function updateProfile(req, res) {
             });
         }
 
-        const user = await userModel.findOneAndUpdate(
+        await userModel.findOneAndUpdate(
             { _id: userId },
             {
                 bio,
@@ -197,12 +197,11 @@ async function updateProfile(req, res) {
 
         res.status(200).json({
             message: "User Profile Update successfully",
-            user
         });
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -245,7 +244,7 @@ async function updateProfilePicture(req, res) {
             req.file.mimetype
         );
 
-        const user = await userModel.findOneAndUpdate(
+        await userModel.findOneAndUpdate(
             { _id: userId },
             {
                 profilePicture: result.url || oldFile,
@@ -267,12 +266,11 @@ async function updateProfilePicture(req, res) {
 
         res.status(200).json({
             message: "User Profile Picture Update successfully",
-            user
         });
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -304,7 +302,7 @@ async function deleteProfilePicture(req, res) {
             await imagekit.files.delete(User.profilePictureFileId);
         }
 
-        const user = await userModel.findOneAndUpdate(
+        userModel.findOneAndUpdate(
             { _id: userId },
             {
                 profilePicture: DEFAULT_PROFILE_PICTURE,
@@ -318,12 +316,11 @@ async function deleteProfilePicture(req, res) {
 
         res.status(200).json({
             message: "Profile Picture Deleted successfully",
-            user
         });
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -386,8 +383,13 @@ async function deleteUser(req, res) {
             }
         }
 
+        // Delete all likes created by the user
+        await likeModel.deleteMany({
+            user: userId
+        });
+
         // Delet User
-        const deletedUser = await userModel.findOneAndDelete(
+        await userModel.findOneAndDelete(
             { _id: userId }
         );
 
@@ -404,7 +406,7 @@ async function deleteUser(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -434,13 +436,11 @@ async function getLikedPost(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
 }
-
-
 
 
 module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById, getLikedPost }

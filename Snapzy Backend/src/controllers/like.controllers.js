@@ -69,15 +69,25 @@ async function likePost(req, res) {
 
 
     } catch (error) {
-        res.status(500).json({
-            message: "Something went wrong",
+
+        console.error(error);
+
+        // Duplicate key error
+        if (error.code === 11000) {
+            return res.status(400).json({
+                message: "Post already liked"
+            });
+        }
+
+        return res.status(500).json({
+            message: "Internal server error",
             error: error.message
         });
     }
 
 }
 
-async function disLikePost(req, res) {
+async function unlikePost(req, res) {
 
     try {
 
@@ -146,7 +156,7 @@ async function disLikePost(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -197,7 +207,7 @@ async function getPostLikes(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -246,11 +256,11 @@ async function userIsLiked(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
 
 }
 
-module.exports = { likePost, disLikePost, getPostLikes, userIsLiked }
+module.exports = { likePost, unlikePost, getPostLikes, userIsLiked }

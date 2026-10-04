@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postrouter);
 app.use("/api/users", userrouter);
-app.use("/api/likes", likerouter);
+app.use("/api/posts", likerouter);
 
 
 module.exports = app;

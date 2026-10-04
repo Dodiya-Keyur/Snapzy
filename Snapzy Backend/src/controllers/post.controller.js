@@ -43,14 +43,20 @@ async function createPost(req, res) {
 
         res.status(201).json({
             message: "Post created successfully",
-            post: post
+            post
         });
 
     } catch (error) {
         console.error(error);
 
+        if (error.code === 11000) {
+            return res.status(400).json({
+                message: "Post already Created"
+            });
+        }
+
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -85,7 +91,7 @@ async function getAllPost(req, res) {
     } catch (error) {
 
         res.status(500).json({
-            message: "Unable to fetch posts",
+            message: "Internal server error",
             error: error.message
         });
 
@@ -125,7 +131,7 @@ async function getPost(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -176,7 +182,7 @@ async function updatePost(req, res) {
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
@@ -233,20 +239,24 @@ async function deletePost(req, res) {
             await imagekit.files.delete(post.imageFileId);
         }
 
+        // Delete all likes of Post
+        await likeModel.deleteMany({
+            post: postId
+        });
+
         // Delet Post
-        const deletedpost = await postModel.findOneAndDelete(
+        await postModel.findOneAndDelete(
             { _id: postId }
         );
 
         res.status(200).json({
             message: "Post Deleted successfully",
-            deletedpost
         });
 
 
     } catch (error) {
         res.status(500).json({
-            message: "Something went wrong",
+            message: "Internal server error",
             error: error.message
         });
     }
