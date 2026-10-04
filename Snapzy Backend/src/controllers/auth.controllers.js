@@ -78,6 +78,12 @@ async function loginUser(req, res) {
         // Get userName/email and password from request body
         const { identifier, password } = req.body;
 
+        if (!identifier || !password) {
+            return res.status(400).json({
+                message: "UserName/email and password are required"
+            });
+        }
+
         const normalizedIdentifier = identifier.trim().toLowerCase();
 
         // Find user using either username or email

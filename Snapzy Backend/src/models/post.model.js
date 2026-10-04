@@ -27,14 +27,12 @@ const postSchema = new mongoose.Schema(
             maxlength: 500,
         },
 
+        // Like on Post 
+        likesCount: {
+            type: Number,
+            default: 0
+        }
 
-        // // Likes
-        // likes: [
-        //     {
-        //         type: mongoose.Schema.Types.ObjectId,
-        //         ref: "User",
-        //     },
-        // ],
 
         // // Comments
         // comments: [

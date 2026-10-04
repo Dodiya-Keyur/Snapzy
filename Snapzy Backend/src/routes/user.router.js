@@ -29,29 +29,9 @@ userrouter.delete("/me/delete-profile-picture", userAuth, userControllers.delete
 // Delete User 
 userrouter.delete("/me/delete-user", userAuth, userControllers.deleteUser)
 
+// Liked Posts
+userrouter.get("/me/liked-post", userAuth, userControllers.getLikedPost)
 
 
-// USER APIs
-// │
-// ├── Profile
-// │   ├── GET    /api/user/me          => Complet
-// │   ├── GET    /api/user/:userid          => Complet
-// │   ├── PATCH  /api/user/update-profile          => Complet
-// │   ├── PATCH  /api/user/profile-picture          => Complet
-// │   └── DELETE /api/user/profile-picture          => Complet
-// │
-// ├── Search
-// │   └── GET    /api/user/search
-// │
-// ├── Follow
-// │   ├── POST   /api/user/:userid/follow 
-// │   └── DELETE /api/user/:userid/follow
-// │
-// ├── Followers
-// │   ├── GET    /api/user/:userid/followers
-// │   └── GET    /api/user/:userid/following
-// │
-// └── Posts
-//     └── GET    /api/user/:userid/posts           => Complet
 
 module.exports = userrouter;

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
+const likeModel = require("../models/like.model");
 
 const { uploadFile, imagekit } = require('../services/storage.services')
 
@@ -169,7 +170,12 @@ async function updateProfile(req, res) {
         const normalizedUsername = username.trim().toLowerCase();
 
         // Check if username is already used by another user
-        const usernameExists = await userModel.findOne({ username: normalizedUsername, _id: userId });
+        const usernameExists = await userModel
+            .findOne(
+                {
+                    username: normalizedUsername,
+                    _id: { $ne: userId }
+                });
 
         if (usernameExists) {
             return res.status(409).json({
@@ -226,7 +232,7 @@ async function updateProfilePicture(req, res) {
         const oldFile = User.profilePicture;
         const oldFileId = User.profilePictureFileId;
 
-        
+
         if (!req.file) {
             return res.status(400).json({
                 message: "Image is required"
@@ -405,4 +411,36 @@ async function deleteUser(req, res) {
 
 }
 
-module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById }
+async function getLikedPost(req, res) {
+    try {
+
+        const userId = req.user._id;
+
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
+        const likedPost = await likeModel
+            .find({ user: userId })
+            .populate("post");
+
+        res.status(200).json({
+            message: "User All Liked Posts fetched successfully",
+            likedPost
+        });
+
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+}
+
+
+
+
+module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById, getLikedPost }
