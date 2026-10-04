@@ -195,7 +195,7 @@ async function changePassword(req, res) {
 
         // Find user
         const user = await userModel
-            .findOne({ _id: userId })
+            .findById({ _id: userId })
             .select("+password");
 
         if (!user) {

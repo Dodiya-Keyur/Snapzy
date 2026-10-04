@@ -442,5 +442,41 @@ async function getLikedPost(req, res) {
     }
 }
 
+async function getSavedPost(req, res) {
 
-module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById, getLikedPost }
+    try {
+
+        const userId = req.user._id;
+
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid User ID"
+            });
+        }
+
+        const user = await userModel
+            .findById(userId)
+            .select("savedPosts")
+            .populate("savedPosts");
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "User all saved posts fetched successfully",
+            savedPosts: user.savedPosts
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+
+}
+
+module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById, getLikedPost, getSavedPost }

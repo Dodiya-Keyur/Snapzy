@@ -1,7 +1,7 @@
 const express = require("express");
 
 // MiddleWare
-const userAuth = require("../middleware/auth.middleware.js");
+const userAuth = require("../middleware/auth.middleware");
 const { validateRegister, validateChangePassword } = require("../middleware/validateRegister.middleware.js")
 
 // Controllers

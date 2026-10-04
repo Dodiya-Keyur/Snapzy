@@ -151,6 +151,16 @@ async function updatePost(req, res) {
             });
         }
 
+        // Find Post
+        const post = await postModel
+            .findById(postId)
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Post not found"
+            });
+        }
+
         // Get caption
         const { caption } = req.body;
 
@@ -204,7 +214,7 @@ async function deletePost(req, res) {
 
         //Get Post By Id
         const post = await postModel
-            .findOne({ _id: postId })
+            .findById({ _id: postId })
             .select("+imageFileId")
             .populate("user", "_id");
 
@@ -263,4 +273,126 @@ async function deletePost(req, res) {
 
 }
 
-module.exports = { createPost, getAllPost, updatePost, deletePost, getPost }
+async function addSavedPost(req, res) {
+    try {
+        const userId = req.user._id;
+        const postId = req.params.postid;
+
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid user ID"
+            });
+        }
+
+        if (!mongoose.isValidObjectId(postId)) {
+            return res.status(400).json({
+                message: "Invalid post ID"
+            });
+        }
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        const post = await postModel.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Post not found"
+            });
+        }
+
+        const isSaved = user.savedPosts.some(
+            (id) => id.toString() === postId
+        );
+
+        if (isSaved) {
+            return res.status(409).json({
+                message: "Post is already saved"
+            });
+        }
+
+        await userModel.findByIdAndUpdate(userId, {
+            $addToSet: {
+                savedPosts: postId
+            }
+        });
+
+        return res.status(200).json({
+            message: "Post saved successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}
+
+async function removeSavedPost(req, res) {  
+    try {
+        const userId = req.user._id;
+        const postId = req.params.postid;
+
+        if (!mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({
+                message: "Invalid user ID"
+            });
+        }
+
+        if (!mongoose.isValidObjectId(postId)) {
+            return res.status(400).json({
+                message: "Invalid post ID"
+            });
+        }
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        const post = await postModel.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Post not found"
+            });
+        }
+
+        const isSaved = user.savedPosts.some(
+            (id) => id.toString() === postId
+        );
+
+        if (!isSaved) {
+            return res.status(404).json({
+                message: "Post is not saved"
+            });
+        }
+
+        await userModel.findByIdAndUpdate(userId, {
+            $pull: {
+                savedPosts: postId
+            }
+        });
+
+        return res.status(200).json({
+            message: "Post removed from saved posts successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}
+
+module.exports = { createPost, getAllPost, updatePost, deletePost, getPost, addSavedPost, removeSavedPost }

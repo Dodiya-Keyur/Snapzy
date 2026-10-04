@@ -27,11 +27,12 @@ userrouter.patch("/me/update-profile-picture", userAuth, upload.single("image"),
 userrouter.delete("/me/delete-profile-picture", userAuth, userControllers.deleteProfilePicture);
 
 // Delete User 
-userrouter.delete("/me/delete-user", userAuth, userControllers.deleteUser)
+userrouter.delete("/me/delete-user", userAuth, userControllers.deleteUser);
 
 // Liked Posts
-userrouter.get("/me/liked-post", userAuth, userControllers.getLikedPost)
+userrouter.get("/me/liked-post", userAuth, userControllers.getLikedPost);
 
-
+// Get all Saved Post
+userrouter.get("/me/saved-posts", userAuth, userControllers.getSavedPost);
 
 module.exports = userrouter;
