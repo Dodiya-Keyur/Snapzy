@@ -27,11 +27,22 @@ const postSchema = new mongoose.Schema(
             maxlength: 500,
         },
 
+        hashtags: [{
+            type: String,
+            lowercase: true,
+            trim: true
+        }],
+
         // Like on Post 
         likesCount: {
             type: Number,
             default: 0
-        }
+        },
+
+        commentCount: {
+            type: Number,
+            default: 0
+        },
 
     },
     {

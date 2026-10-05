@@ -21,9 +21,6 @@ async function createPost(req, res) {
             req.file.mimetype
         );
 
-        // Get caption
-        const { caption } = req.body;
-
         //Get User 
         const userId = req.user._id;
 
@@ -33,11 +30,22 @@ async function createPost(req, res) {
             });
         }
 
+        const { caption, hashtags } = req.body;
+
+        const hashtagArray = Array.isArray(hashtags)
+            ? hashtags
+            : hashtags
+                .split(/\s+/)
+                .map(tag => tag.replace(/^#/, ""))
+                .filter(Boolean);
+
+
         // Create a post
         const post = await postModel.create({
             image: result.url,
             imageFileId: result.fileId,
             caption: caption,
+            hashtags: hashtagArray,
             user: userId,
         });
 
@@ -162,7 +170,14 @@ async function updatePost(req, res) {
         }
 
         // Get caption
-        const { caption } = req.body;
+        const { caption, hashtags } = req.body;
+
+        const hashtagArray = Array.isArray(hashtags)
+            ? hashtags
+            : hashtags
+                .split(/\s+/)
+                .map(tag => tag.replace(/^#/, ""))
+                .filter(Boolean);
 
         const UpdatedPost = await postModel.findOneAndUpdate(
             {
@@ -170,7 +185,8 @@ async function updatePost(req, res) {
                 user: req.user._id
             },
             {
-                caption
+                caption,
+                hashtags: hashtagArray
             },
             {
                 returnDocument: "after",
@@ -334,7 +350,7 @@ async function addSavedPost(req, res) {
     }
 }
 
-async function removeSavedPost(req, res) {  
+async function removeSavedPost(req, res) {
     try {
         const userId = req.user._id;
         const postId = req.params.postid;
