@@ -35,4 +35,12 @@ userrouter.get("/me/liked-post", userAuth, userControllers.getLikedPost);
 // Get all Saved Post
 userrouter.get("/me/saved-posts", userAuth, userControllers.getSavedPost);
 
+
+// Get Followers
+userrouter.get("/me/followers", userAuth, userControllers.getFollowers);
+// Get Following
+userrouter.get("/me/following", userAuth, userControllers.getFollowing);
+
+
+
 module.exports = userrouter;

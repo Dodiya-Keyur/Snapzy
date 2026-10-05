@@ -199,7 +199,7 @@ async function getPostLikes(req, res) {
         });
 
         res.status(200).json({
-            message: "Post Like feach successfully",
+            message: "Post Like fetched successfully",
             totalLikes,
             likes
         });

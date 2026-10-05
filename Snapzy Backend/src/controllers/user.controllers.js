@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
 const likeModel = require("../models/like.model");
+const followModel = require("../models/follow.model");
+
 
 const { uploadFile, imagekit } = require('../services/storage.services')
 
@@ -28,9 +30,19 @@ async function getUser(req, res) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json({
+        const followersCount = await followModel.countDocuments({
+            following: userId
+        });
+
+        const followingCount = await followModel.countDocuments({
+            follower: userId
+        });
+
+        return res.status(200).json({
             message: "User fetched successfully",
-            User
+            User,
+            followersCount,
+            followingCount
         });
 
     } catch (error) {
@@ -93,9 +105,19 @@ async function getUserById(req, res) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json({
+        const followersCount = await followModel.countDocuments({
+            following: userId
+        });
+
+        const followingCount = await followModel.countDocuments({
+            follower: userId
+        });
+
+        return res.status(200).json({
             message: "User fetched successfully",
-            User
+            User,
+            followersCount,
+            followingCount
         });
 
 
@@ -479,4 +501,55 @@ async function getSavedPost(req, res) {
 
 }
 
-module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById, getLikedPost, getSavedPost }
+async function getFollowers(req, res) {
+    try {
+        const userId = req.user._id;
+
+        const followers = await followModel
+            .find({
+                following: userId
+            })
+            .populate("follower", "_id username profilePicture");
+
+        return res.status(200).json({
+            message: "Followers fetched successfully",
+            followers
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}
+
+async function getFollowing(req, res) {
+    try {
+        const userId = req.user._id;
+
+        const following = await followModel
+            .find({
+                follower: userId
+            })
+            .populate("following", "_id username profilePicture");
+
+        return res.status(200).json({
+            message: "Following fetched successfully",
+            following
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}
+
+
+module.exports = { getUser, getUserPost, getUserById, updateProfile, updateProfilePicture, deleteProfilePicture, deleteUser, getUserPostsById, getLikedPost, getSavedPost, getFollowers, getFollowing }
