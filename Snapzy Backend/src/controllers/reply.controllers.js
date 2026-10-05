@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const commentModel = require("../models/comment.model");
 const postModel = require("../models/post.model");
 
+const notificationService = require("../services/notification.service")
 
 async function createReply(req, res) {
     try {
@@ -36,7 +37,6 @@ async function createReply(req, res) {
             });
         }
 
-        const postId = parentComment.post;
 
         // Get reply text
         const { replytext } = req.body
@@ -47,12 +47,39 @@ async function createReply(req, res) {
             });
         }
 
+        const postId = parentComment.post;
+
+
         // Create reply
         const reply = await commentModel.create({
             user: userId,
             post: postId,
             commentText: replytext,
             parentComment: parentCommentId
+        });
+
+        const commentUserId = parentComment.user;
+
+        await notificationService.createNotification({
+            recipient: commentUserId,
+            sender: req.user._id,
+            type: "reply",
+            post: postId
+        });
+
+        const post = await postModel.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({
+                message: "Post not found"
+            });
+        }
+
+        await notificationService.createNotification({
+            recipient: post.user,
+            sender: req.user._id,
+            type: "comment",
+            post: postId
         });
 
         await postModel.findByIdAndUpdate(

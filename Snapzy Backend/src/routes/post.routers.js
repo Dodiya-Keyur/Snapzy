@@ -15,7 +15,7 @@ const postrouter = express.Router();
 postrouter.post("/create-post", userAuth, upload.single("image"), postControllers.createPost);
 
 // Get Post
-postrouter.get("/get-allpost", userAuth, postControllers.getAllPost);
+postrouter.get("/feed", userAuth, postControllers.getAllPost);
 postrouter.get("/getpost/:postid", userAuth, postControllers.getPost);
 
 // Update Post

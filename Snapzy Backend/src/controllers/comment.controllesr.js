@@ -5,6 +5,9 @@ const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
 
 
+const notificationService = require("../services/notification.service")
+
+
 async function createComment(req, res) {
 
     try {
@@ -52,6 +55,13 @@ async function createComment(req, res) {
             post: postId,
             commentText
         })
+
+        await notificationService.createNotification({
+            recipient: post.user,
+            sender: req.user._id,
+            type: "comment",
+            post: postId
+        });
 
         await postModel.findByIdAndUpdate(
             postId,
@@ -245,7 +255,12 @@ async function deleteComment(req, res) {
         }
 
         // Delete comment
-        await commentModel.findByIdAndDelete(commentid);
+        await commentModel.deleteMany({
+                    $or: [
+                        { _id: commentid },
+                        { parentComment: commentid }
+                    ]
+                });
 
         const postId = comment.post._id;
 

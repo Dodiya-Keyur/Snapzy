@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 
 const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
+const likeModel = require("../models/like.model");
 
-const { uploadFile, imagekit } = require('../services/storage.services')
+const { uploadFile, imagekit } = require('../services/storage.services');
+const commentModel = require("../models/comment.model");
 
 async function createPost(req, res) {
 
@@ -32,13 +34,16 @@ async function createPost(req, res) {
 
         const { caption, hashtags } = req.body;
 
-        const hashtagArray = Array.isArray(hashtags)
-            ? hashtags
-            : hashtags
-                .split(/\s+/)
-                .map(tag => tag.replace(/^#/, ""))
-                .filter(Boolean);
+        let hashtagArray
 
+        if (hashtags) {
+            hashtagArray = Array.isArray(hashtags)
+                ? hashtags
+                : hashtags
+                    .split(/\s+/)
+                    .map(tag => tag.replace(/^#/, ""))
+                    .filter(Boolean);
+        }
 
         // Create a post
         const post = await postModel.create({
@@ -172,12 +177,16 @@ async function updatePost(req, res) {
         // Get caption
         const { caption, hashtags } = req.body;
 
-        const hashtagArray = Array.isArray(hashtags)
-            ? hashtags
-            : hashtags
-                .split(/\s+/)
-                .map(tag => tag.replace(/^#/, ""))
-                .filter(Boolean);
+        let hashtagArray = [];
+
+        if (hashtags) {
+            hashtagArray = Array.isArray(hashtags)
+                ? hashtags
+                : hashtags
+                    .split(/\s+/)
+                    .map(tag => tag.replace(/^#/, ""))
+                    .filter(Boolean);
+        }
 
         const UpdatedPost = await postModel.findOneAndUpdate(
             {
@@ -268,6 +277,13 @@ async function deletePost(req, res) {
         // Delete all likes of Post
         await likeModel.deleteMany({
             post: postId
+        });
+
+        await commentModel.deleteMany({
+            $or: [
+                { _id: commentid },
+                { parentComment: commentid }
+            ]
         });
 
         // Delet Post

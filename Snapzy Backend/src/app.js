@@ -10,6 +10,7 @@ const likerouter = require("./routes/like.routers");
 const followrouter = require("./routes/follow.routers");
 const commentrouter = require("./routes/comment.routers");
 const searchrouter = require("./routes/search.routers");
+const notificationrouter = require("./routes/notifications.routers");
 
 const app = express();
 
@@ -28,5 +29,7 @@ app.use("/api/posts", likerouter);
 app.use("/api/follows", followrouter);
 app.use("/api/comments", commentrouter);
 app.use("/search", searchrouter);
+app.use("/api/noti", notificationrouter);
+
 
 module.exports = app;

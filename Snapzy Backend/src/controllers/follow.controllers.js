@@ -5,6 +5,8 @@ const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
 const followModel = require("../models/follow.model");
 
+const notificationService = require("../services/notification.service")
+
 async function follow(req, res) {
     try {
         const userId = req.user._id;
@@ -35,6 +37,12 @@ async function follow(req, res) {
         await followModel.create({
             follower: userId,
             following: followUserId
+        });
+
+        await notificationService.createNotification({
+            recipient: user._id,
+            sender: req.user._id,
+            type: "follow"
         });
 
         return res.status(201).json({

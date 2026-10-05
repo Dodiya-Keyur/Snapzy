@@ -4,6 +4,7 @@ const likeModel = require("../models/like.model");
 const postModel = require("../models/post.model");
 const userModel = require("../models/user.model");
 
+const notificationService = require("../services/notification.service")
 
 async function likePost(req, res) {
 
@@ -51,6 +52,14 @@ async function likePost(req, res) {
             user: userId,
             post: postId
         })
+
+        // Create notification
+        await notificationService.createNotification({
+            recipient: post.user,
+            sender: req.user._id,
+            type: "like",
+            post: post._id
+        });
 
         // Update a Like Count in PostModel
         await postModel.findByIdAndUpdate(
@@ -264,3 +273,4 @@ async function userIsLiked(req, res) {
 }
 
 module.exports = { likePost, unlikePost, getPostLikes, userIsLiked }
+
