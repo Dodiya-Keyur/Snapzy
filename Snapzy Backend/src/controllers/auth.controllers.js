@@ -140,6 +140,7 @@ async function loginUser(req, res) {
         })
 
     } catch (error) {
+
         console.error(error);
 
         return res.status(500).json({
@@ -245,6 +246,9 @@ async function changePassword(req, res) {
         })
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message

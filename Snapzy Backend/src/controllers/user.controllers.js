@@ -46,6 +46,9 @@ async function getUser(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -77,6 +80,9 @@ async function getUserPost(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -123,6 +129,9 @@ async function getUserById(req, res) {
 
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -161,6 +170,9 @@ async function getUserPostsById(req, res) {
 
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -222,6 +234,9 @@ async function updateProfile(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -291,6 +306,9 @@ async function updateProfilePicture(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -341,6 +359,9 @@ async function deleteProfilePicture(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -427,6 +448,9 @@ async function deleteUser(req, res) {
 
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -457,6 +481,9 @@ async function getLikedPost(req, res) {
 
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -493,6 +520,9 @@ async function getSavedPost(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -517,6 +547,7 @@ async function getFollowers(req, res) {
         });
 
     } catch (error) {
+
         console.error(error);
 
         return res.status(500).json({
@@ -542,6 +573,7 @@ async function getFollowing(req, res) {
         });
 
     } catch (error) {
+
         console.error(error);
 
         return res.status(500).json({

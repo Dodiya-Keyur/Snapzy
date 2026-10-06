@@ -256,11 +256,11 @@ async function deleteComment(req, res) {
 
         // Delete comment
         await commentModel.deleteMany({
-                    $or: [
-                        { _id: commentid },
-                        { parentComment: commentid }
-                    ]
-                });
+            $or: [
+                { _id: commentid },
+                { parentComment: commentid }
+            ]
+        });
 
         const postId = comment.post._id;
 
@@ -279,6 +279,9 @@ async function deleteComment(req, res) {
 
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message

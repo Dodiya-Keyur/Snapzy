@@ -103,6 +103,8 @@ async function getAllPost(req, res) {
 
     } catch (error) {
 
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -143,6 +145,9 @@ async function getPost(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -216,6 +221,9 @@ async function updatePost(req, res) {
 
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -297,6 +305,9 @@ async function deletePost(req, res) {
 
 
     } catch (error) {
+
+        console.error(error);
+
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -359,6 +370,9 @@ async function addSavedPost(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         return res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -420,6 +434,9 @@ async function removeSavedPost(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+        
         return res.status(500).json({
             message: "Internal server error",
             error: error.message

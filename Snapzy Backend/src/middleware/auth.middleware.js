@@ -8,7 +8,7 @@ const authMiddleware = async (req, res, next) => {
 
         // 2. Check token exists
         if (!token) {
-            
+
             return res.status(401).json({
                 message: "You are not logged in"
             });
@@ -36,6 +36,7 @@ const authMiddleware = async (req, res, next) => {
         next();
 
     } catch (error) {
+
         console.error(error);
 
         return res.status(401).json({

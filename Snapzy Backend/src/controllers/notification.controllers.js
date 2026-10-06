@@ -26,6 +26,9 @@ async function getNotifications(req, res) {
 
     } catch (error) {
 
+        console.error(error);
+
+
         return res.status(500).json({
             success: false,
             message: error.message
@@ -48,6 +51,8 @@ async function getUnreadCount(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
 
         return res.status(500).json({
             success: false,
@@ -79,6 +84,8 @@ async function markAllAsRead(req, res) {
 
     } catch (error) {
 
+        console.error(error);
+
         return res.status(500).json({
             success: false,
             message: error.message
@@ -108,6 +115,9 @@ async function deleteNotification(req, res) {
         });
 
     } catch (error) {
+
+        console.error(error);
+
         return res.status(500).json({
             success: false,
             message: error.message
@@ -142,7 +152,7 @@ async function deleteAllNotifications(req, res) {
 
     } catch (error) {
 
-        console.log(error)
+        console.log(error);
 
         return res.status(500).json({
             success: false,
