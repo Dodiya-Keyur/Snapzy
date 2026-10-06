@@ -1,191 +1,29 @@
-# ==========================================
-# Node.js
-# ==========================================
-
+# Dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# Package manager files
-.npm/
-.yarn/
-.pnpm-store/
-
-
-# ==========================================
-# Environment Variables / Secrets
-# ==========================================
-
+# Environment variables
 .env
-.env.*
-!.env.example
-
-# Local environment files
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.development
+.env.production
 
-
-# ==========================================
 # Logs
-# ==========================================
-
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-
-# ==========================================
-# Runtime / Temporary Files
-# ==========================================
-
-*.pid
-*.pid.lock
-*.seed
-*.pid
-
-
-# ==========================================
-# Coverage / Testing
-# ==========================================
-
-coverage/
-.nyc_output/
-*.lcov
-
-
-# ==========================================
-# Build / Distribution
-# ==========================================
-
-dist/
-build/
-out/
-.tmp/
-temp/
-.cache/
-
-
-# ==========================================
-# IDE / Code Editors
-# ==========================================
-
-.vscode/
-!.vscode/extensions.json
-!.vscode/settings.json
-
-.idea/
-*.iml
-
-# Sublime Text
-*.sublime-workspace
-*.sublime-project
-
-# Vim
-*.swp
-*.swo
-*~
-
-
-# ==========================================
-# OS Generated Files
-# ==========================================
-
-# macOS
+# OS generated files
 .DS_Store
-.AppleDouble
-.LSOverride
-
-# Windows
 Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-Desktop.ini
 
-# Linux
-.directory
+# IDE / Editor files
+.vscode/
+.idea/
 
+# Testing
+.nyc_output/
 
-# ==========================================
-# Uploads / User Generated Files
-# ==========================================
-
-# Ignore uploaded files if they are stored locally
-uploads/*
-public/uploads/*
-storage/*
-media/*
-
-# Keep folder structure
-!uploads/.gitkeep
-!public/uploads/.gitkeep
-!storage/.gitkeep
-!media/.gitkeep
-
-
-# ==========================================
-# Database / Local Database Files
-# ==========================================
-
-*.sqlite
-*.sqlite3
-*.db
-
-# MongoDB local data (if used)
-data/
-mongodb-data/
-mongo-data/
-
-
-# ==========================================
-# Authentication / Certificates / Keys
-# ==========================================
-
-*.pem
-*.key
-*.crt
-*.cer
-*.p12
-*.pfx
-
-# Ignore private keys
-private/
-secrets/
-
-
-# ==========================================
-# Generated Files
-# ==========================================
-
-generated/
-generated-files/
-.cache/
-.parcel-cache/
-.next/
-.nuxt/
-
-
-# ==========================================
-# Backup Files
-# ==========================================
-
-*.bak
-*.backup
-*.old
-*.orig
-
-
-# ==========================================
-# Miscellaneous
-# ==========================================
-
-.DS_Store
-*.tgz
-*.tar.gz
+# Optional: uploaded files
+uploads/
