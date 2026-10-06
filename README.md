@@ -468,7 +468,7 @@ JWT_SECRET=
 ## 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Snapzy-Backend.git](https://github.com/Dodiya-Keyur/Snapzy.git
+git clone https://github.com/Dodiya-Keyur/Snapzy.git
 ```
 
 ## 2. Go Into the Project
