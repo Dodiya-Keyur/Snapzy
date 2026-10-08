@@ -32,7 +32,7 @@ async function createPost(req, res) {
             });
         }
 
-        const { caption, hashtags } = req.body;
+        const { caption, location, hashtags } = req.body;
 
         let hashtagArray
 
@@ -50,6 +50,7 @@ async function createPost(req, res) {
             image: result.url,
             imageFileId: result.fileId,
             caption: caption,
+            location: location,
             hashtags: hashtagArray,
             user: userId,
         });
@@ -180,7 +181,7 @@ async function updatePost(req, res) {
         }
 
         // Get caption
-        const { caption, hashtags } = req.body;
+        const { caption, location, hashtags } = req.body;
 
         let hashtagArray = [];
 
@@ -200,7 +201,8 @@ async function updatePost(req, res) {
             },
             {
                 caption,
-                hashtags: hashtagArray
+                hashtags: hashtagArray,
+                location,
             },
             {
                 returnDocument: "after",
@@ -436,7 +438,7 @@ async function removeSavedPost(req, res) {
     } catch (error) {
 
         console.error(error);
-        
+
         return res.status(500).json({
             message: "Internal server error",
             error: error.message

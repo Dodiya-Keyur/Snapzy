@@ -199,7 +199,7 @@ async function updateProfile(req, res) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const { bio, username } = req.body;
+        const { bio, username, name } = req.body;
 
         const normalizedUsername = username.trim().toLowerCase();
 
@@ -221,7 +221,8 @@ async function updateProfile(req, res) {
             { _id: userId },
             {
                 bio,
-                username: normalizedUsername
+                username: normalizedUsername,
+                name
             },
             {
                 returnDocument: "after",

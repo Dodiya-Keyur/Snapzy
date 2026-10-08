@@ -27,6 +27,11 @@ const postSchema = new mongoose.Schema(
             maxlength: 500,
         },
 
+        // Post Location
+        location: {
+            type: String
+        },
+
         hashtags: [{
             type: String,
             lowercase: true,
